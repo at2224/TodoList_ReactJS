@@ -1,15 +1,21 @@
 import React from 'react'
 
-// type rfc and tab to auto create template functions
-// Main function capital letter same name as file
-
 export default function TodoCard(props) {
-    const {children} = props 
+    const { children, handleDeleteTodo, index, handleEditTodo } = props
     return (
-        <li className = 'todoItem'>
+        <li className='todoItem' >
+            {children}
             <div className='actionsContainer'>
-                <i classname ="fa-solid fa-pen-to-square"></i>
-                <i classname="fa-regular fa-trash-can"></i>
+                <button onClick={() => {
+                    handleEditTodo(index)
+                }}>
+                    <i className="fa-solid fa-pen-to-square"></i>
+                </button>
+                <button onClick={() => {
+                    handleDeleteTodo(index)
+                }}>
+                    <i className="fa-regular fa-trash-can"></i>
+                </button>
             </div>
         </li>
     )

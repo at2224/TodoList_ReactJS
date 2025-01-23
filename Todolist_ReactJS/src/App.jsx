@@ -1,18 +1,55 @@
+import { useState, useEffect } from "react"
+import TodoInput from "./components/TodoInput"
 import TodoList from "./components/TodoList"
-import TodoInput from "./components/TodoInput" // need imports to display html changes made in /components files
-
 
 function App() {
-  let todos = [
-    'Go to the gym',
-    'Eat more veges',
-    'Pick up kids from school'
-  ]
+  const [todos, setTodos] = useState([]) // react stateful var - something that will change like the to do list item list
+  const [todoValue, setTodoValue] = useState('')
+
+  function persistData(newList) {
+    localStorage.setItem('todos', JSON.stringify({ todos: newList }))
+  }
+
+  function handleAddTodos(newTodo) {
+    const newTodoList = [...todos, newTodo]
+    persistData(newTodoList)
+    setTodos(newTodoList)
+  }
+
+  function handleDeleteTodo(index) {
+    const newTodoList = todos.filter((todo, todoIndex) => {
+      return todoIndex !== index
+    })
+    persistData(newTodoList)
+    setTodos(newTodoList)
+  }
+
+  function handleEditTodo(index) {
+    const valueToBeEdited = todos[index]
+    setTodoValue(valueToBeEdited)
+    handleDeleteTodo(index)
+  }
+
+  useEffect(() => {
+    if (!localStorage) {
+      return
+    }
+
+    let localTodos = localStorage.getItem('todos')
+    if (!localTodos) {
+      return
+    }
+
+    console.log(localTodos)
+    localTodos = JSON.parse(localTodos).todos
+    setTodos(localTodos)
+
+  }, [])
+
   return (
-    // add files so changes made to files will reflect on main tag html
     <>
-      <TodoInput todos = {todos} /> 
-      <TodoList todos={todos}/>
+      <TodoInput todoValue={todoValue} setTodoValue={setTodoValue} handleAddTodos={handleAddTodos} />
+      <TodoList handleEditTodo={handleEditTodo} handleDeleteTodo={handleDeleteTodo} todos={todos} />
     </>
   )
 }
